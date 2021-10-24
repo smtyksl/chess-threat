@@ -2,6 +2,7 @@
 #define GAMEENGINE_H
 #include <QPoint>
 #include <QVector>
+#include <map>
 class CheessPiece{
 public:
 	enum PieceColor {
@@ -10,7 +11,8 @@ public:
 	};
 	QString name;
 	PieceColor color;
-	QPoint point;
+	QPoint coordinate;
+	float point;
 	bool underThreat = false;
 };
 
@@ -21,13 +23,16 @@ public:
 	void startGame();
 	QStringList separateLine(QString line);
 	QPair<QString, CheessPiece::PieceColor>findNameColor(QString piece);
-
+	bool isUnderThreat(CheessPiece *piece);
+	bool checkDiagonalThreats(CheessPiece *piece);
+	bool checkLinarThreats(CheessPiece *piece);
+	void calculatePiecePoint(CheessPiece *piece);
+	void calculateTotalPoints();
 protected:
 	bool readFile();
-	QVector<CheessPiece *> blacks;
-	QVector<CheessPiece *> whites;
-	QVector<CheessPiece *> all;
+
 	CheessPiece * board[8][8];
+	std::map<std::string,int> piecePoint;
 };
 
 #endif // GAMEENGINE_H
