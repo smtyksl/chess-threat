@@ -14,7 +14,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core REQUIRED)
 
-add_executable(chess-threat
+add_executable(chess-threat gameengine.cpp gameengine.h
   main.cpp
 )
 target_link_libraries(chess-threat Qt${QT_VERSION_MAJOR}::Core)
