@@ -24,10 +24,14 @@ public:
 	QStringList separateLine(QString line);
 	QPair<QString, CheessPiece::PieceColor>findNameColor(QString piece);
 	bool isUnderThreat(CheessPiece *piece);
-	bool checkDiagonalThreats(CheessPiece *piece);
-	bool checkLinarThreats(CheessPiece *piece);
-	void calculatePiecePoint(CheessPiece *piece);
 	void calculateTotalPoints();
+	void calculatePiecePoint(CheessPiece *piece);
+
+	bool chechThreatFromQueen(CheessPiece *piece);
+
+	CheessPiece * findQueen(CheessPiece::PieceColor colorQueen);
+	bool chechThreatFromKnight(CheessPiece *piece);
+	bool chechThreatFromPawn(CheessPiece *piece);
 protected:
 	bool readFile();
 

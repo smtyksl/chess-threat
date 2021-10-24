@@ -21,8 +21,10 @@ void GameEngine::startGame()
 	readFile();
 	for (int i = 0; i < 8; ++i) {
 		for (int j = 0; j < 8; ++j) {
+			if(board[i][j]) {
 			isUnderThreat(board[i][j]);
 			calculatePiecePoint(board[i][j]);
+			}
 		}
 	}
 	calculateTotalPoints();
@@ -54,185 +56,12 @@ QPair<QString, CheessPiece::PieceColor> GameEngine::findNameColor(QString piece)
 
 bool GameEngine::isUnderThreat(CheessPiece *piece)
 {
-	if(piece) {
-		for(size_t i = 0; i< 8; i++) {
-			for(size_t j = 0; j< 8; j++) {
-				if(piece->coordinate.x() == (int)i && piece->coordinate.y() == (int)j)
-					continue;
-				else {
-					checkDiagonalThreats(piece);
-				}
-
-			}
-		}
+	if(chechThreatFromKnight(piece) || chechThreatFromPawn(piece) || chechThreatFromQueen(piece))
 		return true;
-	}
+	return false;
 }
-
 //Turkish Satranc Shah Vezir Kale Fil    At     Biyon
 //English Chess   King Queen Rook Bishop Knight Pawn
-/*
-	check king, queen, bishop, pwan
-*/
-//{	if(board[piece->point.x() -1 ][piece->point.y() -1 ]->name == "p" || board[piece->point.x() -1 ][piece->point.y() -1 ]->name == "s")
-bool GameEngine::checkDiagonalThreats(CheessPiece *piece)
-{
-	// top-left
-	for(int i = piece->coordinate.x() -1 ; i > -1 ; i--) {
-		for(int j = piece->coordinate.x() -1 ; j > -1 ; j--) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s" || board[i][j]->name  == "p") && (i == piece->coordinate.x() -1 && j == piece->coordinate.y() -1 ) ) // şah ve piyon un ilk çaprazda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "f")
-						return true;
-					else
-						return false;
-				}
-				else if (board[i][j]->color == piece->color) {
-					return false;
-				}
-			}
-		}
-	}
-	// top right
-	for(int i = piece->coordinate.x() +1 ; i < 8 ; i++) {
-		for(int j = piece->coordinate.x() -1 ; j > -1 ; j--) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s" || board[i][j]->name  == "p") && (i == piece->coordinate.x() +1 && j == piece->coordinate.y() +1 ) ) // şah ve piyon un ilk çaprazda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "f")
-						return true;
-					else
-						return false;
-				}
-				else if (board[i][j]->color == piece->color) {
-					return false;
-				}
-			}
-		}
-	}
-
-	//buttom left
-	for(int i = piece->coordinate.x() -1 ; i > -1 ; i--) {
-		for(int j = piece->coordinate.x() +1 ; j < 8 ; j++) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s" || board[i][j]->name  == "p") && (i == piece->coordinate.x() -1 && j == piece->coordinate.y() +1 ) ) // şah ve piyon un ilk çaprazda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "f")
-						return true;
-					else
-						return false;
-				}
-			}
-			else if (board[i][j]->color == piece->color) {
-				return false;
-			}
-		}
-	}
-
-	//buttom right
-	//buttom left
-	for(int i = piece->coordinate.x() +1 ; i < 8 ; i++) {
-		for(int j = piece->coordinate.x() +1 ; j < 8 ; j++) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s" || board[i][j]->name  == "p") && (i == piece->coordinate.x() +1 && j == piece->coordinate.y() +1 ) ) // şah ve piyon un ilk çaprazda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "f")
-						return true;
-					else
-						return false;
-				}
-				else if (board[i][j]->color == piece->color) {
-					return false;
-				}
-			}
-		}
-	}
-}
-
-bool GameEngine::checkLinarThreats(CheessPiece *piece)
-{
-	{
-		//	left
-		auto j = piece->coordinate.y();
-		for(int i = piece->coordinate.x() -1 ; i > -1 ; i--) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s") && i == piece->coordinate.x() -1  ) // şah in bir birim yanda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "k")
-						return true;
-					else
-						return false;
-				}
-			}
-			else if (board[i][j]->color == piece->color) {
-				return false;
-			}
-		}
-	}
-	{
-		//	right
-		auto j = piece->coordinate.y();
-		for(int i = piece->coordinate.x() +1 ; i < 8 ; i++) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s") && i == piece->coordinate.x() +1  ) // şah in bir birim yanda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "k")
-						return true;
-					else
-						return false;
-				}
-			}
-			else if (board[i][j]->color == piece->color) {
-				return false;
-			}
-		}
-	}
-	{
-		//	down
-		auto i = piece->coordinate.x();
-		for(int j = piece->coordinate.y() +1 ; j < 8 ; j++) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s") && j == piece->coordinate.y() +1  ) // şah in bir birim yanda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "k")
-						return true;
-					else
-						return false;
-				}
-			}
-			else if (board[i][j]->color == piece->color) {
-				return false;
-			}
-		}
-	}
-	{
-		//	down
-		auto i = piece->coordinate.x();
-		for(int j = piece->coordinate.y() -1 ; j > -1 ; j++) {
-			if(board[i][j]) {
-				if( board[i][j]->color != piece->color) {
-					if ((board[i][j]->name  == "s") && j == piece->coordinate.y() -1  ) // şah in bir birim yanda olma durumu
-						return true;
-					else if(board[i][j]->name  == "v" || board[i][j]->name  == "k")
-						return true;
-					else
-						return false;
-				}
-			}
-			else if (board[i][j]->color == piece->color) {
-				return false;
-			}
-		}
-	}
-}
 
 void GameEngine::calculatePiecePoint(CheessPiece *piece)
 {
@@ -240,9 +69,160 @@ void GameEngine::calculatePiecePoint(CheessPiece *piece)
 		std::map<std::string,int>::iterator it;
 		it = piecePoint.find(piece->name.toStdString());
 		piece->point = it->second;
+
 		if( piece->underThreat)
 			piece->point /= 2;
+		qDebug() <<piece->name <<" "<< piece->point <<"Color: "<<(piece->color == CheessPiece::BLACK ? "black" :"white" );
 	}
+}
+
+bool GameEngine::chechThreatFromQueen(CheessPiece *piece)
+{
+	auto queen = findQueen( (piece->color == CheessPiece::BLACK ? CheessPiece::WHITE : CheessPiece::BLACK));
+	auto x = piece->coordinate.x();
+	auto y = piece->coordinate.y();
+	if( std::abs(x- queen->coordinate.x()) == std::abs(y- queen->coordinate.y())) {// queen at piece diagonally
+		if( queen->coordinate.x() < x && queen->coordinate.y() < y ) {//queen at topleft
+			for(int i = x ; i > queen->coordinate.x() ; i-- )
+				for(int j = y ; j > queen->coordinate.y() ; j-- )
+					if(board[i][j])
+						return true;
+		}
+		else if( queen->coordinate.x() > x && queen->coordinate.y() < y ) {//queen at topright
+			for(int i = x ; i < queen->coordinate.x() ; i++)
+				for(int j = y ; j > queen->coordinate.y() ; j-- )
+					if(board[i][j])
+						return true;
+		}
+		else if( queen->coordinate.x() < x && queen->coordinate.y() > y ) {//queen at buttleft
+			for(int i = x ; i < queen->coordinate.x() ; i-- )
+				for(int j = y ; j > queen->coordinate.y() ; j++ )
+					if(board[i][j])
+						return true;
+		}
+		else if( queen->coordinate.x() > x && queen->coordinate.y() > y ) {//queen at topleft
+			for(int i = x ; i > queen->coordinate.x() ; i++ )
+				for(int j = y ; j >queen->coordinate.y() ; j++ )
+					if(board[i][j])
+						return true;
+		}else
+			return false;
+
+	}
+	else if(queen->coordinate.x() == piece->coordinate.x()) {// aynı satırda
+		if(queen->coordinate.y() > piece->coordinate.y()) {
+			for(int i = queen->coordinate.y() ; i > piece->coordinate.y(); i--)
+				if(board[piece->coordinate.x()][i]) {
+					return true;
+				}
+				else if ( queen->coordinate.y() < piece->coordinate.y()) {
+					for(int i = queen->coordinate.y() ; i > piece->coordinate.y(); i--)
+						if(board[piece->coordinate.x()][i])
+							return true;
+				}
+
+		} else if(queen->coordinate.y() == piece->coordinate.y()) {// aynı sutunda
+			if(queen->coordinate.x() > piece->coordinate.x()) {
+				for(int i = queen->coordinate.x() ; i > piece->coordinate.x(); i--)
+					if(board[i][piece->coordinate.y()]) {
+						return true;
+					}
+					else if ( queen->coordinate.x() < piece->coordinate.x()) {
+						for(int i = queen->coordinate.x() ; i > piece->coordinate.x(); i--)
+							if(board[i][piece->coordinate.y()])
+								return true;
+					}
+			}
+		}
+
+	}
+	return false;
+}
+
+CheessPiece *GameEngine::findQueen(CheessPiece::PieceColor ColorQueen)
+{
+	for(int i = 0 ; i< 8 ; i++)
+		for(int j = 0 ; j< 8 ; j++) {
+			if(board[i][j])
+				if( board[i][j]->color == ColorQueen && board[i][j]->name == "v")
+					return board[i][j];
+		}
+	return nullptr;
+}
+
+bool GameEngine::chechThreatFromKnight(CheessPiece *piece)
+{
+	auto x = piece->coordinate.x();
+	auto y = piece->coordinate.y();
+	if(piece->color == CheessPiece::WHITE) {
+		// check possibilities
+		if( board[x-1][y-2]) {
+			if(board[x-1][y-2]->color == CheessPiece::BLACK && board[x-1][y-2]->name == "a") {
+				return true;
+			}
+		}
+		else if( board[x-2][y-1]) {
+			if(board[x-2][y-1]->color == CheessPiece::BLACK && board[x-2][y-1]->name == "a") {
+				return true;
+			}
+		} else if( 0 && board[x+2][y+1]) {
+			if(board[x+2][y+1]->color == CheessPiece::BLACK && board[x+2][y+1]->name == "a") {
+				return true;
+			}
+		} else if( 0&& board[x+1][y+2]) {
+			if(board[x+1][y+2]->color == CheessPiece::BLACK && board[x+1][y+2]->name == "a") {
+				return true;
+			}
+		}
+
+	} else if(piece->color == CheessPiece::BLACK) {
+		// check possibilities
+		if(0 && board[x-1][y-2]) {
+			if(board[x-1][y-2]->color == CheessPiece::WHITE && board[x-1][y-2]->name == "a") {
+				return true;
+			}
+		}
+		else if(0 &&  board[x-2][y-1]) {
+			if(board[x-2][y-1]->color == CheessPiece::WHITE && board[x-2][y-1]->name == "a") {
+				return true;
+			}
+		} else if( 0 && board[x+2][y+1]) {
+			if(board[x+2][y+1]->color == CheessPiece::WHITE && board[x+2][y+1]->name == "a") {
+				return true;
+			}
+		} else if( 0 && board[x+1][y+2]) {
+			if(board[x+1][y+2]->color == CheessPiece::WHITE && board[x+1][y+2]->name == "a") {
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+bool GameEngine::chechThreatFromPawn(CheessPiece *piece)
+{
+	auto x = piece->coordinate.x();
+	auto y = piece->coordinate.y();
+	if(piece->color == CheessPiece::WHITE) {
+		if( board[x+1][y-1]) { // check right top
+			if(board[x+1][y-1]->color ==  CheessPiece::BLACK && board[x+1][y-1]->name == "p")
+				return true;
+		} else if (board[x-1][y-1]) { //check left top
+			if(board[x-1][y-1]->color ==  CheessPiece::BLACK && board[x-1][y-1]->name == "p")
+				return true;
+		} else
+			return  false;
+	} else 	if(piece->color == CheessPiece::BLACK) {
+		if( board[x+1][y+1]) { // check right buttom
+			if(board[x+1][y+1]->color ==  CheessPiece::WHITE && board[x+1][y+1]->name == "p")
+				return true;
+		} else if (0 && board[x-1][y+1] ) { //check left buttom
+			if(board[x-1][y+1]->color ==  CheessPiece::WHITE && board[x-1][y+1]->name == "p")
+				return true;
+		} else
+			return  false;
+	}
+	return false;
 }
 
 void GameEngine::calculateTotalPoints()
@@ -278,7 +258,6 @@ bool GameEngine::readFile()
 			qDebug() << " line:  "<< line;
 			auto l = separateLine(line);
 			for(size_t j = 0 ; j < l.size() ; j++) {
-
 				if( l.at(j) != "--") {
 					CheessPiece * piece = new CheessPiece;
 					auto nameColor =findNameColor(l.at(j));
