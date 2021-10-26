@@ -1,11 +1,7 @@
-#include <QCoreApplication>
-#include <gameengine.h>
+#include "ThreatEvaluater.h"
 
 int main(int argc, char *argv[])
 {
-	QCoreApplication a(argc, argv);
-
-	GameEngine ge;
-	ge.startGame();
-	return a.exec();
+	Board board{argv[1]};
+	ThreatEvaluator::evaluate(board);
 }
