@@ -13,3 +13,4 @@
 ```bash
     ./chess-threat ../files/board1.txt
 ```
+* Note: you can check results with sonuclar.txt inside of files directory. 
