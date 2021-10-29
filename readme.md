@@ -1,3 +1,6 @@
+# Requirements
+    cmake
+
 # Build
 ```bash
     git clone https://github.com/smtyksl/chess-threat.git
